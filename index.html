@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0-beta1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <title>Tarefa 6</title>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="input1" class="form-label">Nome</label>
+                            <input type="text" class="form-control mb-2" id="nome" name="nome" required>
+                            <label for="input2" class="form-label">E-mail</label>
+                            <input type="email" class="form-control mb-2" id="email" name="email" required>
+                            <label for="input3" class="form-label">Telefone</label>
+                            <input type="text" class="form-control mb-2" id="telefone" name="telefone" required>
+                            <button onclick="salvar()" class="btn btn-primary">Salvar</button>
+                            <button onclick="salvarUsuario(usuarios)" class="btn btn-primary">Sincronizar</button>
+                        </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nome</th>
+                            <th scope="col">E-mail</th>
+                            <th scope="col">Telefone</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+   
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0-beta1/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const urlAPI = 'https://630a28d0324991003281a85e.mockapi.io/api/v1/tarefa6';
+        var usuarios = [];
+        function salvar(){
+            var usuario = {
+            nome: document.getElementById('nome').value,
+            email: document.getElementById('email').value,
+            telefone: document.getElementById('telefone').value
+        };
+        usuarios.push(usuario);
+        atualizarTabela(usuarios)
+        }
+        
+        function atualizarTabela(array) {
+            let tbody = document.getElementById('tbody');
+            tbody.innerHTML = '';
+            array.forEach(u => {
+                let tr = document.createElement('tr');
+                let tdNome = document.createElement('td');
+                let tdEmail = document.createElement('td');
+                let tdTelefone = document.createElement('td');
+                tdNome.innerHTML = u.nome;
+                tdEmail.innerHTML = u.email;
+                tdTelefone.innerHTML = u.telefone;
+                tr.appendChild(tdNome);
+                tr.appendChild(tdEmail);
+                tr.appendChild(tdTelefone);
+                tbody.appendChild(tr);
+            });
+        }
+
+
+        function salvarUsuario(array) {
+            //const myFormData = new FormData(array);
+            const formDataObj = {};
+            array.forEach((value, key) => (formDataObj[key] = value));
+
+            fetch(urlAPI, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formDataObj),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    alert("Salvo com sucesso!");
+                    location.reload();
+                })
+                .catch((error) => {
+                    alerta('Erro:', error);
+                });
+        }
+    </script>
+</body>
+
+</html>
